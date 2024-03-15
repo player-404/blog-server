@@ -28,7 +28,7 @@ export const sendSMS = catchAsyncError(async (req, res, next) => {
   // 生成验证码
   const code = Client.generateCode();
   // 发短信
-  //   await Client.sendSMS(phone, code);
+  await Client.sendSMS(phone, code);
   (req as any).code = code;
   res.status(200).json({
     msg: "发送成功",

@@ -29,8 +29,8 @@ export default class Client {
   static async sendSMS(phoneNumber: string, code: string): Promise<void> {
     let client = Client.createClient();
     let sendSmsRequest = new $Dysmsapi20170525.SendSmsRequest({
-      signName: "天气app",
-      templateCode: "SMS_465372270",
+      signName: process.env["SIGN_NAME"],
+      templateCode: process.env["TEMPLATE_CODAE"],
       templateParam: `{"code": ${code}}`,
       phoneNumbers: phoneNumber,
     });
