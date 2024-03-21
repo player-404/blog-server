@@ -18,6 +18,7 @@ const userSchema = new Schema({
       },
       message: "密码需要包含数字、字母、特殊字符中的三位",
     },
+    select: false,
   },
   confirmPassword: {
     type: String || undefined,
@@ -28,6 +29,7 @@ const userSchema = new Schema({
       },
       message: "两次输入的密码不一致",
     },
+    select: false,
   },
   phone: {
     type: String,
@@ -52,6 +54,15 @@ const userSchema = new Schema({
       },
       message: "邮箱格式不正确",
     },
+  },
+  createAt: {
+    type: Date,
+    default: Date.now(),
+    select: false,
+  },
+  passwordChangeAt: {
+    type: Date,
+    select: false,
   },
 });
 
