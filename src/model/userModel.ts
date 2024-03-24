@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-const { Schema } = mongoose;
+import { Schema, ObjectId } from "mongoose";
 
 const userSchema = new Schema({
   username: {
@@ -63,6 +63,16 @@ const userSchema = new Schema({
   passwordChangeAt: {
     type: Date,
     select: false,
+  },
+  roles: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Role",
+    },
+  ],
+  active: {
+    type: Boolean,
+    default: true,
   },
 });
 
