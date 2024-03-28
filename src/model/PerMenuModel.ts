@@ -4,17 +4,17 @@ import { Schema } from "mongoose";
 const PerMenuSchema = new Schema({
   name: {
     type: String,
-    required: true,
+    required: [true, "nama不能为空"],
   },
   type: String,
   desc: String,
   icon: {
     type: String,
-    required: true,
+    required: [true, "icon不能为空"],
   },
   path: {
     type: String,
-    required: true,
+    required: [true, "path不能为空"],
   },
   active: {
     type: Boolean,

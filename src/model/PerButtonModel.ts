@@ -4,16 +4,16 @@ import { Schema } from "mongoose";
 const perButtonSchema = new Schema({
   name: {
     type: String,
-    required: true,
+    required: [true, "nama不能为空"],
   },
   desc: String,
   path: {
     type: String,
-    required: true,
+    required: [true, "path不能为空"],
   },
   icon: {
     type: String,
-    required: true,
+    required: [true, "icon不能为空"],
   },
   active: {
     type: Boolean,

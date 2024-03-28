@@ -2,13 +2,9 @@ import mongoose from "mongoose";
 import { Schema } from "mongoose";
 
 const roleSchema = new Schema({
-  _id: {
-    type: Number,
-    required: true,
-  },
   name: {
     type: String,
-    required: true,
+    required: [true, "nama不能为空"],
   },
   active: {
     type: Boolean,
