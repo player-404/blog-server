@@ -7,6 +7,7 @@ import Redis from "../utils/redis";
 // 注册
 export const signUp = catchAsyncError(async (req, res, next) => {
   const { username, password, confirmPassword, phone, code } = req.body;
+
   // 验证码验证
   if (!Redis.verifyCode(phone, code)) {
     return next(new AppError(501, "验证码错误"));

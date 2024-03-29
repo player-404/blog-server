@@ -5,3 +5,8 @@ export const connectSql = async () => {
   console.log("正在连接数据库...");
   await mongoose.connect(baseUrl);
 };
+
+export const dbDisConnect = async () => {
+  await mongoose.disconnect();
+  console.log("数据库连接断开");
+};

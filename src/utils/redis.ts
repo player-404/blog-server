@@ -1,29 +1,30 @@
 import { createClient } from "redis";
 
 export default class Redis {
+  static redis: any;
   static async connect(url: string) {
-    const client = await createClient({
+    Redis.redis = await createClient({
       url,
     })
       .on("error", (err) => {
         console.log("redis连接失败", err);
       })
       .connect();
-
-    console.log("redis已连接");
-    return client;
+    console.log("redis 连接成功");
   }
   static async verifyCode(phone: string, code: string) {
-    const redis = await Redis.connect(process.env.REDIS_URL as string);
-    const redisCode = await redis.get(phone);
-    await redis.disconnect();
+    const redisCode = await Redis.redis.get(phone);
+    await Redis.redis.disconnect();
     return redisCode === code;
   }
   static async setCode(key: string, value: string, EX?: number) {
-    const redis = await Redis.connect(process.env.REDIS_URL as string);
-    await redis.set(key, value, {
+    await Redis.redis.set(key, value, {
       EX: EX || undefined,
     });
-    await redis.disconnect();
+    await Redis.redis.disconnect();
+  }
+  static async disConnect() {
+    await Redis.redis.disconnect();
+    console.log("redis 连接断开");
   }
 }
