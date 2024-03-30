@@ -1,17 +1,14 @@
 {
-    "restartable": "rs",
-    "ignore": [
-        ".git",
-        "node_modules/",
-        "dist/",
-        "coverage/"
-    ],
-    "watch": [
-        "**/"
-    ],
-    "exec": "ts-node ./server.ts",
-    "env": {
-        "NODE_ENV": "development"
-    },
-    "ext": "js,json,ts"
+  "restartable": "rs",
+  "ignore": [
+    ".git",
+    "node_modules/",
+    "dist/",
+    "coverage/"
+  ],
+  "watch": [
+    "**/"
+  ],
+  "exec": "ts-node ./server.ts",
+  "ext": "js,json,ts"
 }

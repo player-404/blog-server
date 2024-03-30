@@ -20,15 +20,16 @@ process.on("unhandledRejection", (err) => {
 });
 
 // 接收到进程关闭信号
-process.on("SIGINT", () => {
-  Redis.disConnect();
-  dbDisConnect();
+process.on("SIGINT", async () => {
+  await Redis.disConnect();
+  await dbDisConnect();
   process.exit(0);
 });
 // 进程已退出
 process.on("exit", () => {
   console.log("程序退出");
 });
+
 
 // 数据库连接
 connectSql()

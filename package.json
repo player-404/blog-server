@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "set NODE_ENV=development && nodemon",
-    "prd": "set NODE_ENV=production && nodemon",
+    "dev": "set NODE_ENV=development&&nodemon",
+    "prd": "set NODE_ENV=production&&nodemon",
     "build": "tsc"
   },
   "author": "",
