@@ -1,6 +1,6 @@
 import { catchAsyncError } from "../utils/errorHandle";
 import { AppError } from "../utils/errorHandle";
-import userModel from "../model/userModel";
+import User from "../model/userModel";
 import Client from "../utils/sms";
 import Redis from "../utils/redis";
 
@@ -12,7 +12,7 @@ export const signUp = catchAsyncError(async (req, res, next) => {
   if (!Redis.verifyCode(phone, code)) {
     return next(new AppError(501, "验证码错误"));
   }
-  const user = await userModel.create({
+  const user = await User.create({
     username,
     password,
     confirmPassword,
@@ -31,6 +31,13 @@ export const signUp = catchAsyncError(async (req, res, next) => {
 // 验证码发送
 export const sendSMS = catchAsyncError(async (req, res, next) => {
   const { phone } = req.body;
+  const user = await User.findOne({ phone });
+  if (user) {
+    return next(new AppError(500, "手机号已注册"));
+  }
+  if (await Redis.getCode(phone)) {
+    return next(new AppError(501, "验证码发送频繁，请稍后再试"));
+  }
   // 生成验证码
   const code = Client.generateCode();
   // 发短信
@@ -38,5 +45,53 @@ export const sendSMS = catchAsyncError(async (req, res, next) => {
   await Redis.setCode(phone, code, 60 * 5);
   res.status(200).json({
     msg: "发送成功",
+    code,
   });
 });
+
+// 登录
+export const loginUsername = catchAsyncError(async (req, res, next) => {
+  const { username, password } = req.body;
+  const user = await User.findOne({ username })
+    .select("+password")
+    .populate({
+      path: "roles",
+      populate: {
+        path: "menu",
+      },
+    });
+  if (!user) {
+    return next(new AppError(401, "用户名不存在"));
+  }
+  const status = await (user as any).comparePassword(password);
+  if (!status) {
+    return next(new AppError(401, "密码错误"));
+  }
+
+  const token = (user as any).createToken(user._id as any);
+
+  // 登录成功返回用户数据，返回的数据中隐藏 pasword 数据
+  const users = user.toObject({
+    transform: (doc, ret) => {
+      delete ret.password;
+      return ret;
+    },
+  });
+
+  res
+    .status(201)
+    .cookie("jwt", token, {
+      maxAge: Number(process.env.COOKIE_MAXAGE) * 1000 ?? 24 * 60 * 60 * 1000,
+    })
+    .json({
+      code: 201,
+      msg: "登录成功",
+      token,
+      data: {
+        user: users,
+      },
+    });
+});
+
+// 手机验证码登录
+export const loginPhone = catchAsyncError(async (req, res, next) => {});

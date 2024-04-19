@@ -1,4 +1,4 @@
-import { catchAsyncError } from "../utils/errorHandle";
+import { AppError, catchAsyncError } from "../utils/errorHandle";
 import PerMenu from "../model/perMenuModel";
 
 // 创建菜单
@@ -24,3 +24,12 @@ export const deleteMenu = catchAsyncError(async (req, res) => {
   });
 });
 
+// 获取所有菜单
+export const getAllMenus = catchAsyncError(async (req, res, next) => {
+  const menus = await PerMenu.find();
+  if (!menus) return next(new AppError(500, "数据获取失败，请稍后重试"));
+  res.status(200).json({
+    msg: "获取所有菜单成功",
+    menus,
+  });
+});

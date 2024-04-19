@@ -31,6 +31,7 @@ const validateHandle = (err: any) => {
 };
 // 重复key错误处理
 const duplicateHandle = (err: any) => {
+  console.log("err", err);
   const keys = Object.keys(err.keyValue).join(",");
   const message = `${keys} 已存在`;
   return new AppError(401, message);
@@ -61,6 +62,4 @@ const errorHandler = async (
   }
 };
 
-
 export default errorHandler;
-

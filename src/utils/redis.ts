@@ -14,14 +14,15 @@ export default class Redis {
   }
   static async verifyCode(phone: string, code: string) {
     const redisCode = await Redis.redis.get(phone);
-    await Redis.redis.disconnect();
     return redisCode === code;
   }
   static async setCode(key: string, value: string, EX?: number) {
     await Redis.redis.set(key, value, {
       EX: EX || undefined,
     });
-    await Redis.redis.disconnect();
+  }
+  static async getCode(phone: string) {
+    return await Redis.redis.get(phone);
   }
   static async disConnect() {
     await Redis.redis.disconnect();

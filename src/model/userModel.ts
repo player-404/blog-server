@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
-import { Schema, ObjectId } from "mongoose";
+import { Schema } from "mongoose";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { AppError } from "../utils/errorHandle";
 
 const userSchema = new Schema({
   username: {
@@ -45,7 +48,6 @@ const userSchema = new Schema({
   },
   email: {
     type: String,
-    unique: true,
     validate: {
       validator: (value: string) => {
         const reg =
@@ -64,22 +66,42 @@ const userSchema = new Schema({
     type: Date,
     select: false,
   },
-  roles: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Role",
-    },
-  ],
+  roles: {
+    type: [Schema.Types.ObjectId],
+    ref: "Role",
+    default: ["66081ce9f9585be54a14462c"],
+  },
   active: {
     type: Boolean,
     default: true,
+    select: false,
   },
 });
 
 userSchema.pre("save", async function (next: Function) {
   this.confirmPassword = "";
+  this.password = await bcrypt.hash(this.password, 12);
   next();
 });
-const model = mongoose.model("User", userSchema);
 
+// 密码验证
+userSchema.methods.comparePassword = async function (password: string) {
+  console.log("hash", this.password, "text", password);
+  return await bcrypt.compare(password, this.password);
+};
+
+// 创建token
+userSchema.methods.createToken = function () {
+  console.log("key", process.env.JWT_SECRET);
+  const token = jwt.sign(
+    { id: this._id, iat: Date.now() },
+    process.env.JWT_SECRET as string,
+    {
+      expiresIn: process.env.JWT_EXPIRSE,
+    },
+  );
+  return token;
+};
+
+const model = mongoose.model("User", userSchema);
 export default model;

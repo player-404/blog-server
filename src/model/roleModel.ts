@@ -25,10 +25,12 @@ const roleSchema = new Schema({
       ref: "Permission",
     },
   ],
-  menu: {
-    type: Schema.Types.ObjectId,
-    ref: "PerMenu",
-  },
+  menu: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "PerMenu",
+    },
+  ],
   ActionButton: {
     type: Schema.Types.ObjectId,
     ref: "ActionButton",

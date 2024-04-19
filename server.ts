@@ -7,21 +7,18 @@ import Redis from "./src/utils/redis";
 // 捕获未知错误
 process.on("uncaughtException", (err) => {
   console.log("发现错误", err);
-  Redis.disConnect();
   dbDisConnect();
   process.exit(1);
 });
 // 捕获 reject错误
 process.on("unhandledRejection", (err) => {
   console.log("发现错误", err);
-  Redis.disConnect();
   dbDisConnect();
   process.exit(1);
 });
 
 // 接收到进程关闭信号
 process.on("SIGINT", async () => {
-  await Redis.disConnect();
   await dbDisConnect();
   process.exit(0);
 });
@@ -29,7 +26,6 @@ process.on("SIGINT", async () => {
 process.on("exit", () => {
   console.log("程序退出");
 });
-
 
 // 数据库连接
 connectSql()
