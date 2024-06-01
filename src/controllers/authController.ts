@@ -7,9 +7,9 @@ import Redis from "../utils/redis";
 // 注册
 export const signUp = catchAsyncError(async (req, res, next) => {
   const { username, password, confirmPassword, phone, code } = req.body;
-
+  console.log("code", code);
   // 验证码验证
-  if (!Redis.verifyCode(phone, code)) {
+  if (!(await Redis.verifyCode(phone, code))) {
     return next(new AppError(501, "验证码错误"));
   }
   const user = await User.create({
@@ -21,11 +21,25 @@ export const signUp = catchAsyncError(async (req, res, next) => {
   if (!user) {
     return next(new AppError(501, "注册失败"));
   }
-  res.status(201).json({
-    code: 201,
-    msg: "注册成功",
-    data: user,
+
+  const token = (user as any).createToken(user._id as any);
+  const users = user.toObject({
+    transform: (doc, ret) => {
+      delete ret.password;
+      delete ret.active;
+      return ret;
+    },
   });
+  res
+    .cookie("jwt", token, {
+      maxAge: Number(process.env.COOKIE_MAXAGE) * 1000 ?? 24 * 60 * 60 * 1000,
+    })
+    .status(201)
+    .json({
+      code: 201,
+      msg: "注册成功",
+      data: users,
+    });
 });
 
 // 验证码发送

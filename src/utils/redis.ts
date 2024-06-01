@@ -14,6 +14,7 @@ export default class Redis {
   }
   static async verifyCode(phone: string, code: string) {
     const redisCode = await Redis.redis.get(phone);
+    console.log("验证码验证", redisCode, code);
     return redisCode === code;
   }
   static async setCode(key: string, value: string, EX?: number) {

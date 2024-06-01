@@ -19,3 +19,4 @@ router
   .patch(loginProject, roleProject(["admin", "superAdmin"]), updateRole);
 
 export default router;
+

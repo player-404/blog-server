@@ -32,8 +32,13 @@ const validateHandle = (err: any) => {
 // 重复key错误处理
 const duplicateHandle = (err: any) => {
   console.log("err", err);
+  const keysTable: Record<string, string> = {
+    phone: "手机号",
+    email: "邮箱",
+    name: "用户名",
+  };
   const keys = Object.keys(err.keyValue).join(",");
-  const message = `${keys} 已存在`;
+  const message = `${keysTable[keys] ?? keys}已存在`;
   return new AppError(401, message);
 };
 // 错误处理

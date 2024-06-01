@@ -19,3 +19,20 @@ export const getUser = catchAsyncError(async (req, res, next) => {
     data: (req as any).user,
   });
 });
+
+export const getAllUsers = catchAsyncError(async (req, res, next) => {
+  const users = await User.find()
+    .populate({
+      path: "roles",
+      populate: {
+        path: "menu",
+      },
+    })
+    .select("+active");
+  if (!users) return next(new AppError(404, "获取用户失败"));
+  res.status(200).json({
+    status: "success",
+    message: "用户数据获取成功",
+    data: users,
+  });
+});

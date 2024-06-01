@@ -8,6 +8,7 @@ import { Role } from "../utils/role";
 export const loginProject = catchAsyncError(async (req, res, next) => {
   const token =
     req.headers.authorization && req.headers.authorization.split(" ")[1];
+  console.log("token", token);
   // 没有 token
   if (!token) return next(new AppError(401, "未登录"));
 

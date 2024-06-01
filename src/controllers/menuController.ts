@@ -33,3 +33,14 @@ export const getAllMenus = catchAsyncError(async (req, res, next) => {
     menus,
   });
 });
+
+// 获取用户菜单
+export const getUserMenus = catchAsyncError(async (req, res, next) => {
+  const user = (req as any).user;
+  res.status(200).json({
+    msg: "获取用户菜单成功",
+    data: {
+      menus: user.roles[0].menu,
+    },
+  });
+});
